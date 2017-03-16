@@ -3,8 +3,8 @@ wb = require('twilio/lib/resources/task_router/workflowBuilder'),
 Q = require('q');
 
 function buildClient(existingWorkspaceSid) {
-  var accountSid = process.env.AC101aa8f00895f3fc02d0de5d9ddb593a;
-  var authToken = process.env.608e3e33fd11e9f6e608c1012d84f0d1;
+  var accountSid = ADD_KEY;
+  var authToken = ADD_KEY;
   var workspaceSid = existingWorkspaceSid || 'not-set';
   return new twilio.TaskRouterClient(accountSid, authToken, workspaceSid);
 }
