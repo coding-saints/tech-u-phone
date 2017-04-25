@@ -19,15 +19,35 @@ app.post('/voice', (request, response) => {
 
 // Use the Twilio Node.js SDK to build an XML response
 let twiml = new twilio.TwimlResponse();
-twiml.say(`Paul you are a bitch ass honkey.`, {
-    voice: 'alice'
+twiml.gather({numDigits: 1, action: '/voice/numbers', method: 'POST'}, (gatherNode) => {
+    gatherNode.say('Welcome, Thank you for calling Tech Uncensored. For consults press 1. Web Development, press 2. Speaking Engagements, press 3. For all other inqueries, press 4.');
 });
-twiml.play('https://demo.twilio.com/docs/classic.mp3');
+twiml.redirect('/voice');
 
 // Render the response as XML in reply to the webhook request
 response.type('text/xml');
 response.send(twiml.toString());
 });
 
+app.post('/voice/numbers',(req, res) => {
+    let pressedDigit = req.body.Digits;
+    let twiml = new twilio.TwimlResponse();
+   
+    switch(pressedDigit) {
+        case '1':
+            twiml.dial({callerId: '+12155158324'}, '+18146884235');
+            break;
+        case '2':
+            twiml.dial({callerId: '+12155158324'}, '+17174392279');
+            break;
+        default:
+            twiml.redirect('/voice');
+            break;
+    }
+console.log(twiml.toString());
+res.type('text/xml');
+res.send(twiml.toString());
+
+});
 // Create an HTTP server and listen for requests on port 3000
 app.listen(3000);
