@@ -32,10 +32,19 @@ response.send(twiml.toString());
 app.post('/voice/numbers',(req, res) => {
     let pressedDigit = req.body.Digits;
     let twiml = new twilio.TwimlResponse();
+
+    const buttonPushed = [
+        '',
+   'consults',
+   'web development',
+   'speaking engagements',
+   'all other inquires'
+];
    
     switch(pressedDigit) {
         case '1':
             twiml.dial({callerId: '+12155158324'}, '+18146884235');
+          
             break;
         case '2':
             twiml.dial({callerId: '+12155158324'}, '+17174392279');
@@ -44,10 +53,13 @@ app.post('/voice/numbers',(req, res) => {
             twiml.redirect('/voice');
             break;
     }
+    twiml.sms({from: '+12155158324', to: '+18146884235'}, buttonPushed[pressedDigit]);
 console.log(twiml.toString());
 res.type('text/xml');
 res.send(twiml.toString());
 
 });
+
+
 // Create an HTTP server and listen for requests on port 3000
 app.listen(3000);
