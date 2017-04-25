@@ -41,22 +41,16 @@ app.post('/voice/numbers',(req, res) => {
    'all other inquires'
 ];
    
-    switch(pressedDigit) {
-        case '1':
-            twiml.dial({callerId: '+12155158324'}, '+18146884235');
-          
-            break;
-        case '2':
-            twiml.dial({callerId: '+12155158324'}, '+17174392279');
-            break;
-        default:
-            twiml.redirect('/voice');
-            break;
-    }
+   if(pressedDigit > 4) {
+       twiml.redirect('/voice');
+   } else {
+       twiml.dial({callerId: '+12155158324'}, '+18146884235');
     twiml.sms({from: '+12155158324', to: '+18146884235'}, buttonPushed[pressedDigit]);
+   }
 console.log(twiml.toString());
 res.type('text/xml');
 res.send(twiml.toString());
+
 
 });
 
