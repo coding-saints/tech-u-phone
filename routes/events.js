@@ -10,9 +10,9 @@ var express = require('express'),
 // POST /events
 router.post('/', function (req, res) {
   var eventType = req.body.EventType;
-  var taskAttributes = (req.body.TaskAttributes)? JSON.parse(req.body.TaskAttributes) : {};
+  var taskAttributes = (req.body.TaskAttributes) ? JSON.parse(req.body.TaskAttributes) : {};
 
-  function saveMissedCall(){
+  function saveMissedCall() {
     return MissedCall.create({
       selectedProduct: taskAttributes.selected_product,
       phoneNumber: taskAttributes.from
@@ -21,17 +21,19 @@ router.post('/', function (req, res) {
 
   var eventHandler = {
     'task.canceled': saveMissedCall,
-    'workflow.timeout': function() {
+    'workflow.timeout': function () {
       return saveMissedCall().then(voicemail(taskAttributes.call_sid));
     },
-    'worker.activity.update': function(){
+    'worker.activity.update': function () {
       var workerAttributes = JSON.parse(req.body.WorkerAttributes);
       if (req.body.WorkerActivityName === 'Offline') {
         notifyOfflineStatus(workerAttributes.contact_uri);
       }
       return Q.resolve({});
     },
-    'default': function() { return Q.resolve({}); }
+    'default': function () {
+      return Q.resolve({});
+    }
   };
 
   (eventHandler[eventType] || eventHandler['default'])().then(function () {
@@ -39,12 +41,13 @@ router.post('/', function (req, res) {
   });
 });
 
-function voicemail (callSid){
+function voicemail(callSid) {
   var client = buildClient(),
-      query = querystring.stringify({
-        Message: 'Sorry, All agents are busy. Please leave a message. We\'ll call you as soon as possible',
-        Email: process.env.MISSED_CALLS_EMAIL_ADDRESS}),
-      voicemailUrl = util.format("http://twimlets.com/voicemail?%s", query);
+    query = querystring.stringify({
+      Message: 'Sorry, All agents are busy. Please leave a message. We\'ll call you as soon as possible',
+      Email: process.env.MISSED_CALLS_EMAIL_ADDRESS
+    }),
+    voicemailUrl = util.format("http://twimlets.com/voicemail?%s", query);
 
   client.calls(callSid).update({
     method: 'POST',
@@ -54,7 +57,7 @@ function voicemail (callSid){
 
 function notifyOfflineStatus(phone_number) {
   var client = buildClient(),
-      message = 'Your status has changed to Offline. Reply with "On" to get back Online';
+    message = 'Your status has changed to Offline. Reply with "On" to get back Online';
   client.sendMessage({
     to: phone_number,
     from: process.env.TWILIO_NUMBER,
@@ -64,7 +67,7 @@ function notifyOfflineStatus(phone_number) {
 
 function buildClient() {
   var accountSid = process.env.TWILIO_ACCOUNT_SID,
-      authToken = process.env.TWILIO_AUTH_TOKEN;
+    authToken = process.env.TWILIO_AUTH_TOKEN;
   return require('twilio')(accountSid, authToken);
 }
 

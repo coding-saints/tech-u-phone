@@ -1,13 +1,13 @@
 var mongoose = require('mongoose');
 
 var Recording = new mongoose.Schema({
-   url: String,
-transcription: String,
-phoneNumber: String
+    url: String,
+    transcription: String,
+    phoneNumber: String
 });
 
 var agent = new mongoose.Schema({
-   extension: String,
+    extension: String,
     phoneNumber: String,
     recordings: [Recording]
 });

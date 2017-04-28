@@ -1,9 +1,9 @@
 var twilio = require('twilio');
 wb = require('twilio/lib/resources/task_router/workflowBuilder'),
-Q = require('q');
+  Q = require('q');
 
 function buildClient(existingWorkspaceSid) {
-  var accountSid ='AC8517aa30ae99e60dd51ebba10a4a3735';
+  var accountSid = 'AC8517aa30ae99e60dd51ebba10a4a3735';
   var authToken = '2241b365221657a22a05153e8d398c3d';
   var workspaceSid = existingWorkspaceSid || 'not-set';
   return new twilio.TaskRouterClient(accountSid, authToken, workspaceSid);
@@ -16,11 +16,11 @@ function setup(errorHandler) {
     host = process.env.HOST,
     eventCallback = host + '/events';
 
-  deleteByFriendlyName(workspaceName).then(function(){
-    return create(workspaceName, eventCallback).then(function(client){
+  deleteByFriendlyName(workspaceName).then(function () {
+    return create(workspaceName, eventCallback).then(function (client) {
       var workspace = client.workspace;
 
-      workspace.activities.list().then(function(response){
+      workspace.activities.list().then(function (response) {
         var idleActivity = response.activities.find(byFriendlyName('Idle'));
         var offlineActivity = response.activities.find(byFriendlyName('Offline'));
         var busyActivity = response.activities.find(byFriendlyName('Busy'));
@@ -29,7 +29,7 @@ function setup(errorHandler) {
         workspace.workers.create({
           friendlyName: 'Bob',
           attributes: JSON.stringify({
-            "products": [ "ProgrammableSMS" ],
+            "products": ["ProgrammableSMS"],
             "contact_uri": process.env.BOB_NUMBER
           }),
           activitySid: idleActivity.sid
@@ -37,7 +37,7 @@ function setup(errorHandler) {
           workspace.workers.create({
             friendlyName: 'Alice',
             attributes: JSON.stringify({
-              "products": [ "ProgrammableVoice" ],
+              "products": ["ProgrammableVoice"],
               "contact_uri": process.env.ALICE_NUMBER
             }),
             activitySid: idleActivity.sid
@@ -96,8 +96,8 @@ function setup(errorHandler) {
           ];
 
           var taskRouting = new wb.TaskRoutingConfiguration({
-            filters : rules,
-            default_filter : defaultTarget
+            filters: rules,
+            default_filter: defaultTarget
           });
           var workflowConfiguration = new wb.WorkflowConfiguration({
             taskRouting: taskRouting
@@ -109,7 +109,7 @@ function setup(errorHandler) {
             fallbackAssignmentCallbackUrl: host + '/call/assignment',
             taskReservationTimeout: 15,
             configuration: workflowConfiguration
-          }).then(function(workflow){
+          }).then(function (workflow) {
             workflowDeferred.resolve({
               workflowSid: workflow.sid,
               activities: {
@@ -126,22 +126,22 @@ function setup(errorHandler) {
   return Q.all([workerDeferred.promise, workflowDeferred.promise]);
 }
 
-function byFriendlyName(name){
-  return function(item) {
+function byFriendlyName(name) {
+  return function (item) {
     return item.friendly_name === name;
   };
 }
 
 function findByFriendlyName(friendlyName) {
   var client = buildClient();
-  return client.workspaces.list().then(function (data){
+  return client.workspaces.list().then(function (data) {
     return data.workspaces.find(byFriendlyName(friendlyName));
   });
 }
 
 function deleteByFriendlyName(friendlyName) {
   return findByFriendlyName(friendlyName).then(function (workspace) {
-    if (workspace){
+    if (workspace) {
       var client = buildClient(workspace.sid);
       return client.workspace.delete();
     }
@@ -153,7 +153,7 @@ function create(friendlyName, eventCallbackUrl) {
   return client.workspaces.create({
     friendlyName: friendlyName,
     eventCallbackUrl: eventCallbackUrl
-  }).then(function(workspace){
+  }).then(function (workspace) {
     return buildClient(workspace.sid);
   });
 }

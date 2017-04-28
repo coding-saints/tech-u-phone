@@ -1,8 +1,8 @@
 'use strict';
 
 var express = require('express'),
-    router = express.Router(),
-    twilio = require('twilio');
+  router = express.Router(),
+  twilio = require('twilio');
 
 module.exports = function (app) {
   // POST /call/incoming
@@ -12,7 +12,7 @@ module.exports = function (app) {
       numDigits: 1,
       action: '/call/enqueue',
       method: 'POST'
-    }, function(gatherNode) {
+    }, function (gatherNode) {
       gatherNode.say('For Programmable SMS, press one. For Voice, press any other key.');
     });
     res.type('text/xml');
@@ -26,7 +26,7 @@ module.exports = function (app) {
     var selectedProduct = (pressedKey === '1') ? 'ProgrammableSMS' : 'ProgrammableVoice';
     twimlResponse.enqueue({
       workflowSid: app.get('workspaceInfo').workflowSid
-    }, function(enqueueNode) {
+    }, function (enqueueNode) {
       enqueueNode.task('{"selected_product": "' + selectedProduct + '"}');
     });
 
