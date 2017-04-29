@@ -74,6 +74,7 @@ app.post('/voice/numbers', (req, res) => {
 
 });
 app.post('/voice/redirect', (req, res) => {
+    console.log(req.body);
     if (req.body.DialCallStatus === 'no-answer' || req.body.DialCallStatus === 'failed' || req.body.DialCallStatus === 'busy') {
         twiml.dial({
             callerId: '+12155158324',
