@@ -50,13 +50,7 @@ app.post('/voice/numbers', (req, res) => {
     if (pressedDigit > 4) {
         twiml.redirect('/voice');
     } else {
-        twiml.dial({
-            callerId: '+12155158324',
-            action: '/voice/redirect',
-            timeout: 5
-
-        }, '+18146884235');
-        twiml.sms({
+         twiml.sms({
             from: '+12155158324',
             to: '+18146884235'
         }, buttonPushed[pressedDigit]);
@@ -64,6 +58,13 @@ app.post('/voice/numbers', (req, res) => {
             from: '+12155158324',
             to: '+17174392279'
         }, buttonPushed[pressedDigit]);
+        twiml.dial({
+            callerId: '+12155158324',
+            action: '/voice/redirect',
+            timeout: 5
+
+        }, '+18146884235');
+       
     }
 
     console.log(twiml.toString());
