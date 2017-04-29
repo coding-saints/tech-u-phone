@@ -52,7 +52,8 @@ app.post('/voice/numbers', (req, res) => {
     } else {
         twiml.dial({
             callerId: '+12155158324',
-            action: '/voice/redirect'
+            action: '/voice/redirect',
+            timeout: 5
 
         }, '+18146884235');
         twiml.sms({
