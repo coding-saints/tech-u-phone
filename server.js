@@ -51,17 +51,35 @@ app.post('/voice/numbers', (req, res) => {
         twiml.redirect('/voice');
     } else {
         twiml.dial({
-            callerId: '+12155158324'
+            callerId: '+12155158324',
+            action: '/voice/redirect'
+
         }, '+18146884235');
         twiml.sms({
             from: '+12155158324',
             to: '+18146884235'
         }, buttonPushed[pressedDigit]);
+        twiml.sms({
+            from: '+12155158324',
+            to: '+17174392279'
+        }, buttonPushed[pressedDigit]);
     }
+
     console.log(twiml.toString());
     res.type('text/xml');
     res.send(twiml.toString());
 
+
+});
+app.post('/voice/redirect', (req, res) => {
+    if (req.body.DialCallStatus === 'no-answer' || req.body.DialCallStatus === 'failed' || req.body.DialCallStatus === 'busy') {
+        twiml.dial({
+            callerId: '+12155158324',
+        }, '+17174392279');
+        console.log(twiml.toString());
+        res.type('text/xml');
+        res.send(twiml.toString());
+    }
 
 });
 
