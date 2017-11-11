@@ -56,7 +56,7 @@ app.post('/voice/numbers', (req, res) => {
         }, buttonPushed[pressedDigit]);
         twiml.sms({
             from: '+12155158324',
-            to: '+17174392279'
+            to: '+18146367110'
         }, buttonPushed[pressedDigit]);
         twiml.dial({
             callerId: '+12155158324',
